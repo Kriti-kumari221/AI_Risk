@@ -1,0 +1,43 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# Large datasets
+data/raw/*.csv
+data/raw/*.zip
+data/processed/
+data/features/
+
+# Trained models
+models/*.pkl
+models/*.joblib
+models/*.h5
+models/*.keras
+models/*.weights.h5
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
