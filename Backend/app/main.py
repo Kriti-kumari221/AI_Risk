@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 import os
 import sys
@@ -30,6 +31,10 @@ app.add_middleware(
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend")
 if os.path.exists(frontend_path):
     app.mount("/ui", StaticFiles(directory=frontend_path, html=True), name="frontend")
+
+@app.get("/")
+def root_redirect():
+    return RedirectResponse(url="/ui/")
 
 # Global instances
 orchestrator = None
