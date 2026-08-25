@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RazorShield — AI Risk Command Center</title>
+    <meta name="description" content="RazorShield: Autonomous, explainable AI fraud detection powered by Groq LLM, XGBoost, and Isolation Forest.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2>RazorShield</h2>
+                    <span class="logo-sub">AI Risk Manager</span>
+                </div>
+            </div>
+            <nav class="menu">
+                <a href="#" class="active" data-target="tab-investigation" id="nav-investigation">
+                    <span class="icon">🔍</span> Investigation
+                </a>
+                <a href="#" data-target="tab-metrics" id="nav-metrics">
+                    <span class="icon">📊</span> Metrics
+                </a>
+                <a href="#" data-target="tab-reviews" id="nav-reviews">
+                    <span class="icon">📋</span> Review Queue
+                </a>
+                <a href="#" data-target="tab-policy" id="nav-policy">
+                    <span class="icon">⚙️</span> Policy Engine
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="status-indicator" id="backendStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Risk Command Center</h1>
+                    <p class="header-sub">Powered by Groq LLM · XGBoost · Isolation Forest · Graph Intelligence</p>
+                </div>
+                <div class="controls">
+                    <button id="simulateFraudBtn" class="btn btn-danger">🚨 Simulate Fraud</button>
+                    <button id="simulateBtn" class="btn btn-primary">⚡ Simulate Transaction</button>
+                </div>
+            </header>
+
+            <!-- Investigation Tab -->
+            <div id="tab-investigation" class="tab-pane active">
+                <div class="dashboard-grid">
+
+                    <!-- Transaction Info & Decision -->
+                    <div class="panel decision-panel glass">
+                        <h3><span class="h3-icon">🎯</span> Investigation Status</h3>
+                        <div id="txInfo" class="tx-info">
+                            <p class="placeholder">⏳ Awaiting transaction simulation...</p>
+                        </div>
+
+                        <div id="decisionBox" class="decision-box hidden">
+                            <div class="risk-meter">
+                                <svg class="circular-chart" viewBox="0 0 36 36">
+                                    <path class="circle-bg"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path class="circle" id="riskCircle" stroke-dasharray="0, 100"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <text x="18" y="20.35" class="percentage" id="riskScoreText">0</text>
+                                </svg>
+                                <div class="risk-label" id="riskLabel">SAFE</div>
+                            </div>
+                            <div class="action-card" id="actionCard">
+                                <div class="action-badge" id="finalAction">ALLOW</div>
+                                <div class="confidence-row">
+                                    <span class="confidence-label">Confidence</span>
+                                    <span class="confidence-val" id="confidenceVal">HIGH</span>
+                                </div>
+                                <div class="llm-engine-badge" id="llmEngineBadge">
+                                    ✨ Groq llama-3.3-70b
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Groq AI Synthesis Box -->
+                        <div class="genai-box" id="genaiBox" style="display:none;">
+                            <div class="genai-header">
+                                <span class="genai-pulse"></span>
+                                <span>AI Analyst Synthesis</span>
+                                <span class="genai-engine" id="genaiEngineLabel"></span>
+                            </div>
+                            <p id="actionReason" class="genai-text">Awaiting case...</p>
+
+                            <!-- Risk Factors -->
+                            <div id="riskFactorsBox" style="display:none; margin-top:15px;">
+                                <div class="risk-factors-label">⚠️ Risk Signals Identified</div>
+                                <ul id="riskFactorsList" class="risk-factors-list"></ul>
+                            </div>
+
+                            <!-- Recommended Followup -->
+                            <div id="followupBox" style="display:none; margin-top:15px;">
+                                <div class="risk-factors-label">📌 Recommended Action</div>
+                                <p id="followupText" class="followup-text"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agent Trace -->
+                    <div class="panel trace-panel glass">
+                        <h3><span class="h3-icon">🔗</span> Agent Investigation Trace</h3>
+                        <div class="trace-container" id="traceContainer">
+                            <p class="placeholder">No trace available.</p>
+                        </div>
+                    </div>
+
+                    <!-- Cost Analyzer -->
+                    <div class="panel cost-panel glass">
+                        <h3><span class="h3-icon">💰</span> Cost-Aware Reasoning</h3>
+                        <div class="cost-grid" id="costGrid">
+                            <div class="cost-item cost-allow">
+                                <span class="cost-label">ALLOW</span>
+                                <span class="cost-val" id="costAllow">₹0</span>
+                            </div>
+                            <div class="cost-item cost-verify">
+                                <span class="cost-label">VERIFY</span>
+                                <span class="cost-val" id="costVerify">₹0</span>
+                            </div>
+                            <div class="cost-item cost-review">
+                                <span class="cost-label">REVIEW</span>
+                                <span class="cost-val" id="costReview">₹0</span>
+                            </div>
+                            <div class="cost-item cost-block">
+                                <span class="cost-label">BLOCK</span>
+                                <span class="cost-val" id="costBlock">₹0</span>
+                            </div>
+                        </div>
+                        <div class="cost-extra">
+                            <div class="recommendation">
+                                <span>Cost-Optimal Action:</span>
+                                <strong id="costRec">N/A</strong>
+                            </div>
+                            <div class="chargeback-row">
+                                <span>Chargeback Exposure:</span>
+                                <strong id="chargebackVal">₹0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Network Graph -->
+                    <div class="panel graph-panel glass">
+                        <h3><span class="h3-icon">🌐</span> Entity Network Intelligence</h3>
+                        <div id="graphNetwork" class="network-container"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Metrics Tab -->
+            <div id="tab-metrics" class="tab-pane" style="display:none;">
+                <div class="metrics-header">
+                    <h2>System Metrics</h2>
+                    <p>Real-time performance overview of the RazorShield AI risk engine.</p>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card glass">
+                        <div class="metric-icon">🛡️</div>
+                        <div class="metric-value" id="metricTotal">—</div>
+                        <div class="metric-label">Transactions Analyzed</div>
+                    </div>
+                    <div class="metric-card glass">
+                        <div class="metric-icon">🚫</div>
+                        <div class="metric-value" id="metricBlocked">—</div>
+                        <div class="metric-label">Blocked (Fraud)</div>
+                    </div>
+                    <div class="metric-card glass">
+                        <div class="metric-icon">⚡</div>
+                        <div class="metric-value" id="metricAvgMs">—</div>
+                        <div class="metric-label">Avg. Response Time</div>
+                    </div>
+                    <div class="metric-card glass">
+                        <div class="metric-icon">🤖</div>
+                        <div class="metric-value" id="metricGroq">—</div>
+                        <div class="metric-label">Groq LLM Reports</div>
+                    </div>
+                </div>
+                <div class="chart-panel glass" style="margin-top:20px;">
+                    <h3>Decision Distribution (Session)</h3>
+                    <canvas id="decisionChart" style="max-height:280px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div id="tab-reviews" class="tab-pane" style="display:none;">
+                <div class="metrics-header">
+                    <h2>Human Review Queue</h2>
+                    <p>Transactions escalated by the agent requiring manual analyst inspection.</p>
+                </div>
+                <div id="reviewsList" class="glass" style="padding:20px;">
+                    <p class="placeholder">Loading reviews...</p>
+                </div>
+            </div>
+
+            <!-- Policy Tab -->
+            <div id="tab-policy" class="tab-pane" style="display:none;">
+                <div class="metrics-header">
+                    <h2>Policy Engine Configuration</h2>
+                    <p>Hard-coded guardrails that override agent recommendations to ensure safety.</p>
+                </div>
+                <div class="policy-grid">
+                    <div class="policy-card glass">
+                        <div class="policy-icon">✅</div>
+                        <div class="policy-rule">Auto-ALLOW below risk score</div>
+                        <div class="policy-value">30 / 100</div>
+                    </div>
+                    <div class="policy-card glass">
+                        <div class="policy-icon">🔔</div>
+                        <div class="policy-rule">Step-up VERIFY above risk score</div>
+                        <div class="policy-value">50 / 100</div>
+                    </div>
+                    <div class="policy-card glass">
+                        <div class="policy-icon">👁️</div>
+                        <div class="policy-rule">Manual REVIEW above risk score</div>
+                        <div class="policy-value">70 / 100</div>
+                    </div>
+                    <div class="policy-card glass">
+                        <div class="policy-icon">🚫</div>
+                        <div class="policy-rule">Hard BLOCK above risk score</div>
+                        <div class="policy-value">95 / 100</div>
+                    </div>
+                    <div class="policy-card glass" style="grid-column: 1/-1;">
+                        <div class="policy-icon">💸</div>
+                        <div class="policy-rule">Hard-block transactions above amount</div>
+                        <div class="policy-value">₹10,000</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

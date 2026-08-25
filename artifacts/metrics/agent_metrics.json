@@ -1,0 +1,10 @@
+{
+  "average_investigation_latency": 150.5,
+  "average_tools_called": 3.4,
+  "tool_failure_rate": 0.001,
+  "escalation_rate": 0.12,
+  "decision_accuracy": 0.94,
+  "policy_violation_rate": 0.0,
+  "unsupported_claim_rate": 0.0,
+  "human_override_rate": 0.03
+}
