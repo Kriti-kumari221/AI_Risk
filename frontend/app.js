@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const dot  = backendStatus.querySelector(".status-dot");
         const text = backendStatus.querySelector(".status-text");
         try {
-            const res = await fetch("http://localhost:8000/health");
+            const res = await fetch("/health");
             if (res.ok) {
                 dot.className  = "status-dot online";
                 text.textContent = "Agent Online";
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         try {
-            const response = await fetch("http://localhost:8000/api/v1/risk/investigate", {
+            const response = await fetch("/api/v1/risk/investigate", {
                 method:  "POST",
                 headers: { "Content-Type": "application/json" },
                 body:    JSON.stringify(tx),
@@ -417,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const list = document.getElementById("reviewsList");
         list.innerHTML = '<p class="placeholder">Loading...</p>';
         try {
-            const res  = await fetch("http://localhost:8000/api/v1/reviews");
+            const res  = await fetch("/api/v1/reviews");
             const data = await res.json();
             if (data.length === 0) {
                 list.innerHTML = '<p class="placeholder">No transactions in the review queue.</p>';
