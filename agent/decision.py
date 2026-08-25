@@ -67,6 +67,16 @@ class DecisionEngine:
             "hard_block_amount": 10000
         }
         
+    def get_risk_level(self, risk_score: int) -> str:
+        if risk_score >= self.policy["max_auto_block_risk"]:
+            return "CRITICAL"
+        elif risk_score >= self.policy["require_review_above"]:
+            return "HIGH RISK"
+        elif risk_score >= self.policy["verification_above"]:
+            return "ELEVATED"
+        else:
+            return "SAFE"
+            
     def authorize(self, agent_proposal: str, risk_score: int, transaction: dict) -> dict:
         """
         Policy engine that takes the agent's proposed action and ensures it is within bounds.
@@ -100,5 +110,6 @@ class DecisionEngine:
         return {
             "action": authorized_action,
             "reason": reason,
-            "policy_check": "PASS" if authorized_action == agent_proposal else "FAIL"
+            "policy_check": "PASS" if authorized_action == agent_proposal else "FAIL",
+            "risk_level": self.get_risk_level(risk_score)
         }

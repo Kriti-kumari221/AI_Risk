@@ -97,9 +97,18 @@ def investigate_transaction(transaction: dict, background_tasks: BackgroundTasks
         "recommended_followup": state.get("recommended_followup", ""),
         "llm_engine":           state.get("llm_engine", "unknown"),
         "duration_ms":          state.get("duration_ms"),
-        "trace_summary":        [t["step"] for t in state.get("trace", [])],
+        "trace_summary":        state.get("trace", []),
         "cost_analysis":        state.get("cost_analysis", {}),
+        "risk_score":           state.get("evidence", {}).get("fusion", {}).get("final_risk_score", 0),
+        "risk_level":           state.get("risk_level", "UNKNOWN"),
+        "graph_evidence":       state.get("evidence", {}).get("graph", {}),
     }
+
+@app.get("/api/v1/policy")
+def get_policy():
+    if not orchestrator:
+        raise HTTPException(status_code=503, detail="Agent not initialized")
+    return orchestrator.decision_engine.policy
 
 @app.get("/api/v1/agent/{agent_run_id}/trace")
 def get_trace(agent_run_id: str):

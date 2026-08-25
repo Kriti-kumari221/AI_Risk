@@ -40,12 +40,20 @@ def init_db():
             agent_recommended_action TEXT,
             risk_score INTEGER,
             amount REAL,
+            escalation_reason TEXT,
             reviewer_decision TEXT,
             reviewer_reason TEXT,
             reviewed_at TEXT
         )
     ''')
     
+    
+    # Handle migrations for existing databases
+    try:
+        cursor.execute("ALTER TABLE reviews ADD COLUMN escalation_reason TEXT")
+    except sqlite3.OperationalError:
+        pass # Column already exists
+        
     conn.commit()
     conn.close()
 
@@ -76,15 +84,16 @@ def save_audit(state: dict):
         if not cursor.fetchone():
             cursor.execute('''
                 INSERT INTO reviews
-                (transaction_id, agent_run_id, created_at, agent_recommended_action, risk_score, amount)
-                VALUES (?, ?, ?, ?, ?, ?)
+                (transaction_id, agent_run_id, created_at, agent_recommended_action, risk_score, amount, escalation_reason)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             ''', (
                 state.get("transaction_id"),
                 state.get("agent_run_id"),
                 state.get("trace")[0]["timestamp"] if state.get("trace") else "",
                 state.get("recommended_action"),
                 state.get("evidence", {}).get("fusion", {}).get("final_risk_score", 0),
-                0 # Amount would come from original transaction, handled at app level
+                state.get("amount", 0),
+                state.get("policy_reason", "Manual Review Triggered")
             ))
             
     conn.commit()

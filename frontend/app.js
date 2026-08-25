@@ -204,16 +204,14 @@ document.addEventListener("DOMContentLoaded", () => {
         llmEngineBadge.style.borderColor = isGroq ? "rgba(139,92,246,0.3)" : "rgba(245,158,11,0.3)";
         llmEngineBadge.style.background  = isGroq ? "var(--purple-glow)" : "rgba(245,158,11,0.08)";
 
-        // ── Risk Score (from trace_summary length as proxy if no evidence returned) ─
-        // The API doesn't return the fused score directly, so we estimate visually
-        const actionScoreMap = { ALLOW: 15, VERIFY: 52, REVIEW: 72, BLOCK: 91 };
-        const score = actionScoreMap[action] || 50;
+        // ── Risk Score ─────────────────────────────────────────────────────────
+        const score = result.risk_score !== undefined ? Math.round(result.risk_score) : 50;
         riskScoreText.textContent = score;
         riskCircle.setAttribute("stroke-dasharray", `${score}, 100`);
-        let color = "var(--success)"; let label = "SAFE";
-        if (score > 85) { color = "var(--danger)";  label = "CRITICAL"; }
-        else if (score > 65) { color = "var(--warning)"; label = "HIGH RISK"; }
-        else if (score > 40) { color = "var(--warning)"; label = "ELEVATED"; }
+        const label = result.risk_level || "UNKNOWN";
+        let color = "var(--success)";
+        if (label === "CRITICAL") color = "var(--danger)";
+        else if (label === "HIGH RISK" || label === "ELEVATED") color = "var(--warning)";
         riskCircle.style.stroke = color;
         riskLabel.textContent   = label;
         riskLabel.style.color   = color;
@@ -243,16 +241,18 @@ document.addEventListener("DOMContentLoaded", () => {
         // ── Trace Steps ───────────────────────────────────────────────────────
         const steps = result.trace_summary || [];
         for (let i = 0; i < steps.length; i++) {
-            const step = steps[i];
+            const stepObj = steps[i];
+            const stepName = stepObj.step || stepObj;
             const el = document.createElement("div");
             el.className = "trace-item";
-            const iconClass = getTraceIconClass(step);
-            const iconChar  = getTraceIconChar(step);
+            const iconClass = getTraceIconClass(stepName);
+            const iconChar  = getTraceIconChar(stepName);
+            const detailText = stepObj.details || getTraceDescription(stepName, result);
             el.innerHTML = `
                 <div class="trace-icon ${iconClass}">${iconChar}</div>
                 <div class="trace-content">
-                    <div class="trace-step">${step}</div>
-                    <div class="trace-detail">${getTraceDescription(step, result)}</div>
+                    <div class="trace-step">${stepName}</div>
+                    <div class="trace-detail">${detailText}</div>
                 </div>
             `;
             traceContainer.appendChild(el);
@@ -268,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateMetrics(result.duration_ms);
 
         // ── Graph Draw ─────────────────────────────────────────────────────────
-        drawGraph(tx, action);
+        drawGraph(tx, action, result.graph_evidence);
     }
 
     // ── Typing Effect ──────────────────────────────────────────────────────────
@@ -322,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ── Graph Draw ─────────────────────────────────────────────────────────────
-    function drawGraph(tx, action) {
+    function drawGraph(tx, action, graphEvidence = {}) {
         const riskColor = { ALLOW: "#10b981", VERIFY: "#3b82f6", REVIEW: "#f59e0b", BLOCK: "#ef4444" };
         const txColor   = riskColor[action] || "#8b5cf6";
 
@@ -337,22 +337,23 @@ document.addEventListener("DOMContentLoaded", () => {
         const edges = [{ from: 1, to: 2, width: 2 }];
         let id = 3;
 
+        const signals = graphEvidence.signals || [];
+        const isDeviceRisky = signals.some(s => s.toLowerCase().includes("device"));
+        const isEmailRisky = signals.some(s => s.toLowerCase().includes("email"));
+
         if (tx.DeviceInfo) {
-            const isRisky = !tx.DeviceInfo || tx.DeviceInfo.toLowerCase().includes("unknown");
             nodes.push({ id, label: `Device\n${tx.DeviceInfo || "Unknown"}`, shape: "ellipse",
-                color: { background: isRisky ? "#7f1d1d" : "#065f46", border: isRisky ? "#ef4444" : "#10b981" },
+                color: { background: isDeviceRisky ? "#7f1d1d" : "#065f46", border: isDeviceRisky ? "#ef4444" : "#10b981" },
                 font: { color: "white", size: 10 } });
-            edges.push({ from: 1, to: id, color: { color: isRisky ? "#ef4444" : "#10b981" } });
+            edges.push({ from: 1, to: id, color: { color: isDeviceRisky ? "#ef4444" : "#10b981" } });
             id++;
         }
 
         if (tx.P_emaildomain) {
-            const suspiciousDomains = ["anonymous", "guerrilla", "yopmail", "mailinator", "temp"];
-            const isRisky = suspiciousDomains.some(d => tx.P_emaildomain.includes(d));
             nodes.push({ id, label: `Email\n@${tx.P_emaildomain}`, shape: "ellipse",
-                color: { background: isRisky ? "#78350f" : "#1e3a5f", border: isRisky ? "#f59e0b" : "#60a5fa" },
+                color: { background: isEmailRisky ? "#78350f" : "#1e3a5f", border: isEmailRisky ? "#f59e0b" : "#60a5fa" },
                 font: { color: "white", size: 10 } });
-            edges.push({ from: 1, to: id, color: { color: isRisky ? "#f59e0b" : "#60a5fa" } });
+            edges.push({ from: 1, to: id, color: { color: isEmailRisky ? "#f59e0b" : "#60a5fa" } });
             id++;
         }
 
@@ -421,6 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
             pane.style.display = "block";
             pane.classList.add("active");
             if (targetId === "tab-reviews") loadReviews();
+            if (targetId === "tab-policy") loadPolicy();
         });
     });
 
@@ -436,16 +438,37 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             list.innerHTML = data.map(r => `
-                <div class="review-item">
-                    <div>
-                        <strong>${r.transaction_id}</strong>
-                        <span style="font-size:11px; color:var(--text-muted); margin-left:12px;">Risk Score: ${r.risk_score}</span>
+                <div class="review-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                        <div>
+                            <strong>${r.transaction_id}</strong>
+                            <span style="font-size:11px; color:var(--text-muted); margin-left:12px;">Risk Score: ${r.risk_score}</span>
+                            <span style="font-size:11px; color:var(--text-muted); margin-left:12px;">Amt: ₹${r.amount}</span>
+                        </div>
+                        <span style="font-size:11px; color:var(--text-muted);">${new Date(r.created_at).toLocaleString()}</span>
                     </div>
-                    <span style="font-size:11px; color:var(--text-muted);">${new Date(r.created_at).toLocaleString()}</span>
+                    <div style="font-size:12px; color:var(--warning); background: rgba(245, 158, 11, 0.08); padding: 6px 10px; border-radius: 4px; width: 100%; border-left: 2px solid var(--warning);">
+                        ⚠️ ${r.escalation_reason || "Escalated to human review."}
+                    </div>
                 </div>
             `).join("");
         } catch {
             list.innerHTML = '<p class="placeholder" style="color:var(--danger)">⛔ Error loading reviews.</p>';
+        }
+    }
+
+    // ── Policy Loader ──────────────────────────────────────────────────────────
+    async function loadPolicy() {
+        try {
+            const res  = await fetch("/api/v1/policy");
+            const data = await res.json();
+            document.getElementById("polAutoAllow").textContent = `${data.max_auto_allow_risk} / 100`;
+            document.getElementById("polVerify").textContent = `${data.verification_above} / 100`;
+            document.getElementById("polReview").textContent = `${data.require_review_above} / 100`;
+            document.getElementById("polBlock").textContent = `${data.max_auto_block_risk} / 100`;
+            document.getElementById("polAmount").textContent = `₹${data.hard_block_amount.toLocaleString('en-IN')}`;
+        } catch (e) {
+            console.error("Failed to load policy", e);
         }
     }
 });

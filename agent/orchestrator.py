@@ -157,6 +157,8 @@ class RiskAgentOrchestrator:
         final_action  = policy_result["action"]
         log_step("ACTION_AUTHORIZED", f"Final action: {final_action} | Policy: {policy_result['policy_check']} | {policy_result['reason']}")
         state["final_decision"] = final_action
+        state["policy_reason"] = policy_result["reason"]
+        state["risk_level"] = policy_result.get("risk_level", "UNKNOWN")
 
         # ── EXECUTION ────────────────────────────────────────────────────────
         log_step("ACTION_EXECUTED", f"Simulated execution of {final_action} for transaction {state['transaction_id']}")
@@ -182,5 +184,6 @@ class RiskAgentOrchestrator:
         state["risk_factors"]         = llm_report.get("risk_factors", [])
         state["recommended_followup"] = llm_report.get("recommended_followup", "")
         state["llm_engine"]           = llm_report.get("generated_by", "unknown")
+        state["amount"]               = amount
 
         return state
