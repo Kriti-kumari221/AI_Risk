@@ -172,7 +172,60 @@ RazorShield uses chronological **70/15/15 train-validation-test splitting** to r
 
 ---
 
-## ⚡ Quick Start
+## 📁 Project Structure
+
+```
+AI_Riskk/
+│
+├── agent/                          # Agentic Orchestration Layer
+│   ├── orchestrator.py             # Core Risk Agent – tool orchestration & state machine
+│   ├── decision.py                 # Decision Engine + Merchant Policy enforcement
+│   └── llm_reasoner.py             # Groq LLM synthesis + deterministic fallback
+│
+├── ml/                             # Machine Learning Layer
+│   ├── inference.py                # XGBoost & Isolation Forest inference logic
+│   ├── fusion.py                   # Risk Fusion Engine (weighted ensemble)
+│   ├── model_loader.py             # Loads models at startup (no re-training at runtime)
+│   └── graph/
+│       ├── graph_features.py       # Entity network feature computation
+│       └── graph_risk_tool.py      # Graph risk scoring tool for the agent
+│
+├── models/                         # Saved Model Artifacts
+│   ├── razorshield_xgboost_v2.pkl
+│   ├── razorshield_xgboost_v2_features.pkl
+│   ├── razorshield_isolation_forest_590k.pkl
+│   ├── razorshield_lstm_590k.keras
+│   └── ...                         # Scalers, feature lists, thresholds
+│
+├── Backend/                        # FastAPI Service Layer
+│   ├── app/
+│   │   ├── main.py                 # API routes, startup, static file serving
+│   │   └── db/                     # SQLite Audit Database
+│   └── razorshield.db
+│
+├── frontend/                       # Risk Command Center UI
+│   ├── index.html                  # Dashboard layout
+│   ├── style.css                   # Glassmorphism design system
+│   └── app.js                      # Live simulation, graph rendering, custom data modal
+│
+├── Notebooks/                      # ML Research & Training Notebooks
+│   ├── Data_Understanding.ipynb
+│   ├── Preprocess.ipynb
+│   ├── XGBoost.ipynb
+│   ├── 03_Model.ipynb
+│   ├── 05_anomaly.ipynb
+│   └── lstm.ipynb
+│
+├── run.py                          # Single command to start the backend server
+├── requirements.txt
+├── .env.example                    # API key template (copy to .env)
+├── Dockerfile
+└── README.md
+```
+
+---
+
+## 🚀 Quick Start
 
 ```bash
 git clone <repo>
