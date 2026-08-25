@@ -20,12 +20,12 @@ data/raw/*.zip
 data/processed/
 data/features/
 
-# Trained models
-models/*.pkl
-models/*.joblib
-models/*.h5
-models/*.keras
-models/*.weights.h5
+# Trained models — included for deployment
+# models/*.pkl
+# models/*.joblib
+# models/*.h5
+# models/*.keras
+# models/*.weights.h5
 
 # Logs
 *.log
