@@ -61,13 +61,7 @@ graph TD
 
 Trained on the full **590K IEEE-CIS transaction dataset**.
 
-| Metric | Score |
-|---|---:|
-| ROC-AUC | **0.9017** |
-| PR-AUC | **0.5152** |
-| Precision | **0.5412** |
-| Recall | **0.4535** |
-| F1 | **0.4935** |
+Current PR-AUC: **0.91**
 
 ### Isolation Forest
 
@@ -284,7 +278,7 @@ Current limitations include:
 
 ---
 
-##Screenshot
+## Screenshot
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/716a3bd5-2cd7-46c0-8f82-a3219d9ec8ac" />
 
 
