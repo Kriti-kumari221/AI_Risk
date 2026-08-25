@@ -1,25 +1,24 @@
 # RazorShield — Production Requirements (Render Deployment)
-# Only what the backend needs to run — no Jupyter, no Windows-only packages
 
 # API & Server
-fastapi==0.115.0
-uvicorn==0.30.6
-python-multipart==0.0.9
-pydantic==2.8.2
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
 
 # Environment
-python-dotenv==1.0.1
+python-dotenv
 
-# ML & Data
+# ML & Data — pinned to stable pre-built Linux wheels
 numpy==1.26.4
-pandas==2.2.2
-scikit-learn==1.5.1
-xgboost==2.1.1
-joblib==1.4.2
+pandas==2.1.4
+scikit-learn==1.3.2
+xgboost==2.0.3
+joblib==1.3.2
 
-# Deep Learning (LSTM)
-tensorflow-cpu==2.17.0
+# Deep Learning (LSTM) — CPU only, much lighter
+tensorflow-cpu==2.15.0
 
 # Groq LLM
-groq==0.9.0
-httpx==0.27.0
+groq
+httpx
