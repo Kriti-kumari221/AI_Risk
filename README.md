@@ -1,8 +1,8 @@
 # RazorShield AI Risk Manager
 
-> An AI-powered payment risk system that detects fraud, investigates suspicious behavior, and recommends the right action.
+An AI-powered payment risk system that detects fraud, investigates suspicious behavior, and recommends the right action.
 
-> RazorShield combines **machine learning, behavioral anomaly detection, graph intelligence, cost-aware decisioning, and an AI Risk Agent** to analyze transactions from multiple perspectives. It goes beyond simply predicting fraud by investigating evidence, evaluating the cost of possible actions, and producing an explainable **risk score and decision** such as **Allow, Verify, Review, or Block.
+RazorShield combines machine learning, behavioral anomaly detection, graph intelligence, cost-aware decisioning, and an AI Risk Agent to analyze transactions from multiple perspectives. It goes beyond simply predicting fraud by investigating evidence, evaluating the cost of possible actions, and producing an explainable risk score and decision such as Allow, Verify, Review, or Block.
 
 
 ---
