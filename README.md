@@ -1,4 +1,4 @@
-# 🛡️ RazorShield AI Risk Manager
+# RazorShield AI Risk Manager
 
 > **An autonomous AI Risk Manager that detects, investigates, and responds to payment risk.**
 
@@ -7,8 +7,7 @@ RazorShield combines **ML fraud detection, behavioral anomaly detection, graph i
 Built for the **Razorpay AI Buildathon — AI Risk Manager Track**.
 
 ---
-## Live Demo
-https://ai-risk-4.onrender.com/ui/
+## Live Demo:  https://ai-risk-4.onrender.com/ui/
 
 ## End-to-End Architecture
 
@@ -57,7 +56,7 @@ graph TD
 
 ---
 
-## 🧠 ML System
+## ML System
 
 ### XGBoost — Primary Fraud Model
 
@@ -93,7 +92,7 @@ Because it underperformed XGBoost, it is retained as an experimental component r
 
 ---
 
-## 🤖 AI Risk Agent
+## AI Risk Agent
 
 RazorShield is not just:
 
@@ -115,7 +114,7 @@ The GenAI layer is used for **structured risk synthesis and explanation**, while
 
 ---
 
-## 💰 Cost-Aware Decisioning
+## Cost-Aware Decisioning
 
 Instead of using only a fixed fraud threshold, RazorShield compares:
 
@@ -128,7 +127,7 @@ The system chooses the safest policy-compliant action based on risk and cost.
 
 ---
 
-## 🎯 Decisions
+## Decisions
 
 ```text
 LOW       → ALLOW
@@ -141,7 +140,7 @@ Thresholds are configurable.
 
 ---
 
-## 🌐 Risk Command Center
+## Risk Command Center
 
 The dashboard provides:
 
@@ -158,7 +157,7 @@ The dashboard provides:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **ML:** Python, XGBoost, scikit-learn, TensorFlow  
 **Agent:** Groq / Llama + deterministic tool orchestration  
@@ -170,7 +169,7 @@ The dashboard provides:
 
 ---
 
-## 📊 Dataset
+## Dataset
 
 **IEEE-CIS Fraud Detection**
 
@@ -185,7 +184,7 @@ RazorShield uses chronological **70/15/15 train-validation-test splitting** to r
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 AI_Riskk/
@@ -238,7 +237,7 @@ AI_Riskk/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 git clone <repo>
@@ -260,7 +259,7 @@ http://localhost:8000/ui/
 
 ---
 
-## 🏆 Why RazorShield?
+## Why RazorShield?
 
 Traditional systems often stop at:
 
@@ -272,7 +271,7 @@ RazorShield continues:
 
 ---
 
-## ⚠️ Limitations
+## Limitations
 
 RazorShield is a **production-oriented prototype**, not a guaranteed fraud-prevention system.
 
@@ -290,7 +289,7 @@ Current limitations include:
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/716a3bd5-2cd7-46c0-8f82-a3219d9ec8ac" />
 
 
-## 🔮 Future Work
+## Future Work
 
 - stronger temporal models
 - calibrated risk probabilities
@@ -304,7 +303,7 @@ Current limitations include:
 
 <div align="center">
 
-### 🛡️ RazorShield
+### RazorShield
 
 **Detect. Investigate. Reason. Decide. Audit.**
 
