@@ -15,7 +15,7 @@ GROQ_API_KEY = os.environ.get(
     ""
 )
 # Model priority list — first working model is used
-GROQ_MODELS = ["groq/compound", "openai/gpt-oss-20b", "qwen/qwen3.6-27b"]
+GROQ_MODELS = ["llama-3.3-70b-versatile", "llama3-70b-8192", "mixtral-8x7b-32768"]
 GROQ_MODEL  = GROQ_MODELS[0]
 
 

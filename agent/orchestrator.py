@@ -159,6 +159,8 @@ class RiskAgentOrchestrator:
         state["final_decision"] = final_action
         state["policy_reason"] = policy_result["reason"]
         state["risk_level"] = policy_result.get("risk_level", "UNKNOWN")
+        # Enrich graph evidence with runtime signals for frontend rendering
+        state["evidence"]["graph"]["suspicious_hour"] = suspicious_hour
 
         # ── EXECUTION ────────────────────────────────────────────────────────
         log_step("ACTION_EXECUTED", f"Simulated execution of {final_action} for transaction {state['transaction_id']}")

@@ -357,11 +357,12 @@ document.addEventListener("DOMContentLoaded", () => {
             id++;
         }
 
+        const isHourRisky = graphEvidence.suspicious_hour === true;
         nodes.push({ id, label: `Hour\n${tx.TransactionHour}:00`, shape: "dot", size: 12,
-            color: { background: tx.TransactionHour < 5 ? "#7f1d1d" : "#1e3a5f",
-                     border: tx.TransactionHour < 5 ? "#ef4444" : "#60a5fa" },
+            color: { background: isHourRisky ? "#7f1d1d" : "#1e3a5f",
+                     border: isHourRisky ? "#ef4444" : "#60a5fa" },
             font: { color: "white", size: 9 } });
-        edges.push({ from: 1, to: id });
+        edges.push({ from: 1, to: id, color: { color: isHourRisky ? "#ef4444" : "rgba(255,255,255,0.2)" } });
 
         const data    = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
         const options = {
