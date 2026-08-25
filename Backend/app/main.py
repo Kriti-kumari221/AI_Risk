@@ -98,6 +98,7 @@ def investigate_transaction(transaction: dict, background_tasks: BackgroundTasks
         "llm_engine":           state.get("llm_engine", "unknown"),
         "duration_ms":          state.get("duration_ms"),
         "trace_summary":        [t["step"] for t in state.get("trace", [])],
+        "cost_analysis":        state.get("cost_analysis", {}),
     }
 
 @app.get("/api/v1/agent/{agent_run_id}/trace")

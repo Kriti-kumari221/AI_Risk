@@ -184,6 +184,18 @@ document.addEventListener("DOMContentLoaded", () => {
         finalAction.className    = `action-badge color-${action}`;
         confidenceVal.textContent = result.confidence || "N/A";
 
+        // ── Cost Analysis ──────────────────────────────────────────────────────
+        const costData = result.cost_analysis || {};
+        const costs = costData.costs || {};
+        
+        document.getElementById("costAllow").textContent    = `₹${costs.ALLOW !== undefined ? costs.ALLOW : 0}`;
+        document.getElementById("costVerify").textContent   = `₹${costs.VERIFY !== undefined ? costs.VERIFY : 0}`;
+        document.getElementById("costReview").textContent   = `₹${costs.REVIEW !== undefined ? costs.REVIEW : 0}`;
+        document.getElementById("costBlock").textContent    = `₹${costs.BLOCK !== undefined ? costs.BLOCK : 0}`;
+        
+        document.getElementById("costRec").textContent      = costData.recommended_action_by_cost || "N/A";
+        document.getElementById("chargebackVal").textContent = `₹${costData.chargeback_exposure !== undefined ? costData.chargeback_exposure : 0}`;
+
         // ── LLM Engine Badge ───────────────────────────────────────────────────
         const engine = result.llm_engine || "unknown";
         const isGroq = engine.toLowerCase().includes("groq");
