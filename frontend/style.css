@@ -621,3 +621,34 @@ h3 {
 }
 .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
 .form-actions { display: flex; justify-content: flex-end; margin-top: 24px; }
+
+/* ─── Mobile Responsiveness ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .app-container { flex-direction: column; overflow: hidden; }
+    .sidebar { width: 100%; padding: 16px; border-right: none; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
+    .logo { margin-bottom: 0; }
+    .menu { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .menu a { white-space: nowrap; margin-bottom: 0; }
+    .sidebar-footer { display: none; } /* Hide status on mobile to save space */
+    
+    .main-content { padding: 16px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+    .controls { flex-wrap: wrap; width: 100%; }
+    .controls .btn { flex: 1; min-width: calc(50% - 10px); text-align: center; }
+    
+    .dashboard-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .trace-panel, .cost-panel, .graph-panel, .decision-panel { grid-column: 1 / -1; }
+    
+    .decision-box { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .risk-meter { margin: 0 auto; }
+    
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .policy-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .controls .btn { min-width: 100%; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .form-row { flex-direction: column; gap: 12px; margin-bottom: 12px; }
+    .modal-content { width: 95%; padding: 20px; }
+}
