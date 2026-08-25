@@ -10,8 +10,8 @@ pydantic
 python-dotenv
 
 # ML & Data
-numpy==2.2.6
-pandas==2.3.3
+numpy==1.26.4
+pandas==2.1.4
 scikit-learn==1.7.2
 xgboost==3.2.0
 joblib
