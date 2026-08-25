@@ -1,8 +1,12 @@
 import os
 import logging
 import json
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
+
+# Load environment variables from .env
+load_dotenv()
 
 # ─── Groq API Key ──────────────────────────────────────────────────────────────
 # Priority 1: passed explicitly | Priority 2: env var | Priority 3: hardcoded fallback
