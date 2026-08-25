@@ -586,3 +586,38 @@ h3 {
 .color-BLOCK  { color: var(--danger); }
 
 .tab-pane.active { display: block; }
+
+/* ─── Modal ────────────────────────────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+}
+.modal-content {
+    width: 480px; max-width: 90%;
+    padding: 24px;
+    animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+}
+.modal-header h2 { font-size: 18px; color: var(--text-main); }
+.close-btn { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; transition: color 0.2s; }
+.close-btn:hover { color: var(--text-main); }
+.form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+.form-group { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+.form-group input, .form-group select {
+    background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px; color: var(--text-main); font-family: var(--font-mono); font-size: 13px;
+    outline: none; transition: border 0.2s;
+}
+.form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+.form-actions { display: flex; justify-content: flex-end; margin-top: 24px; }

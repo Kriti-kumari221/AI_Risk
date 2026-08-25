@@ -130,6 +130,33 @@ document.addEventListener("DOMContentLoaded", () => {
     simulateBtn.addEventListener("click",      () => runInvestigation(buildTransaction()));
     simulateFraudBtn.addEventListener("click", () => runInvestigation(buildTransaction(true)));
 
+    // ── Custom Data Modal ──────────────────────────────────────────────────────
+    const customBtn = document.getElementById("customBtn");
+    const customDataModal = document.getElementById("customDataModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const customDataForm = document.getElementById("customDataForm");
+
+    if (customBtn) customBtn.addEventListener("click", () => customDataModal.classList.remove("hidden"));
+    if (closeModalBtn) closeModalBtn.addEventListener("click", () => customDataModal.classList.add("hidden"));
+
+    if (customDataForm) {
+        customDataForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            customDataModal.classList.add("hidden");
+            const customPayload = {
+                TransactionID: "TXN-CUSTOM-" + Math.floor(Math.random() * 99999),
+                TransactionAmt: parseFloat(document.getElementById("customAmt").value),
+                TransactionHour: parseInt(document.getElementById("customHour").value),
+                TransactionDay: 5, // arbitrary
+                has_identity: parseInt(document.getElementById("customIdentity").value),
+                card1: document.getElementById("customCard").value,
+                DeviceInfo: document.getElementById("customDevice").value,
+                P_emaildomain: document.getElementById("customEmail").value
+            };
+            runInvestigation(customPayload);
+        });
+    }
+
     // ── Reset UI ───────────────────────────────────────────────────────────────
     function resetUI() {
         decisionBox.classList.add("hidden");
