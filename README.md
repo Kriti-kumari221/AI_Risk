@@ -7,36 +7,49 @@ RazorShield combines **ML fraud detection, behavioral anomaly detection, graph i
 Built for the **Razorpay AI Buildathon — AI Risk Manager Track**.
 
 ---
+##Live Demo
+https://ai-risk-4.onrender.com/ui/
 
-## 🚀 How It Works
+## End-to-End Architecture
 
 ```mermaid
-flowchart LR
+graph TD
+    TX[Payment Transaction] --> AG[Risk Agent Orchestrator]
 
-A[Transaction] --> B[AI Risk Agent]
+    AG --> XGB[XGBoost Risk Tool]
+    AG --> AN[Isolation Forest Tool]
+    AG --> GR[Graph Intelligence Tool]
+    AG --> HI[Transaction History Tool]
 
-B --> C[XGBoost]
-B --> D[Anomaly Detection]
-B --> E[Graph Intelligence]
+    XGB --> EV[Evidence Store]
+    AN --> EV
+    GR --> EV
+    HI --> EV
 
-C --> F[Risk Fusion]
-D --> F
-E --> F
+    EV --> FU[Risk Fusion]
+    FU --> CO[Cost Analyzer]
+    CO --> DE[Decision Engine]
+    DE --> PO[Merchant Policy Engine]
 
-F --> G[Cost Analysis]
-G --> H[Policy Engine]
+    PO -->|ALLOW| AL[Allow]
+    PO -->|VERIFY| VE[Step-up Verification]
+    PO -->|REVIEW| RV[Human Review Queue]
+    PO -->|BLOCK| BL[Block in Safe/Test Mode]
 
-H --> I[ALLOW]
-H --> J[VERIFY]
-H --> K[REVIEW]
-H --> L[BLOCK]
+    AL --> AU[Audit Trail]
+    VE --> AU
+    RV --> AU
+    BL --> AU
 
-K --> M[Human Review]
-L --> M
+    EV --> LLM[Groq LLM / Deterministic Fallback]
+    LLM --> AU
 
-F --> N[AI Explanation]
-M --> O[Audit Trail]
+    AU --> DB[(SQLite / Audit Database)]
+    DB --> FB[Feedback + Evaluation]
 ```
+
+---
+
 
 ### Agent Loop
 
@@ -272,6 +285,10 @@ Current limitations include:
 - synthetic/demo actions rather than unrestricted financial execution
 
 ---
+
+##Screenshot
+<img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/716a3bd5-2cd7-46c0-8f82-a3219d9ec8ac" />
+
 
 ## 🔮 Future Work
 
