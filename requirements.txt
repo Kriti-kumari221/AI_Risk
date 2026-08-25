@@ -1,24 +1,16 @@
-# RazorShield — Production Requirements (Render Deployment)
-
-# API & Server
 fastapi
 uvicorn[standard]
 python-multipart
 pydantic
-
-# Environment
 python-dotenv
 
-# ML & Data
-numpy==1.26.4
-pandas==2.1.4
-scikit-learn==1.7.2
-xgboost==3.2.0
+numpy
+pandas
+scikit-learn
+xgboost
 joblib
+pyarrow
+networkx
 
-# Deep Learning (LSTM) — CPU only
-tensorflow-cpu==2.15.0
-
-# Groq LLM
 groq
 httpx
